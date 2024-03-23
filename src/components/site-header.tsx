@@ -43,6 +43,13 @@ export function SiteHeader() {
                 <span className="sr-only">Twitter</span>
               </div>
             </Link>
+            <Link
+          href={siteContent.links.login}
+          rel="noreferrer"
+          className={buttonVariants()}
+        >
+          Sign In
+        </Link>
             <ThemeToggle />
           </nav>
         </div>

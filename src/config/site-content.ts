@@ -13,5 +13,8 @@ export const siteContent = {
     twitter: "https://twitter.com/setient",
     github: "https://github.com/pbhalesain/nextjs-template",
     docs: "https://setient.com",
+    login: "/login",
+    register: "/register",
+    logout: "/logout",
   },
 }

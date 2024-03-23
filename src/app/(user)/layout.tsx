@@ -1,6 +1,7 @@
-import { SiteHeader } from "@/components/site-header";
+import { AppHeader } from "@/components/app-header";
 import "@/styles/globals.css";
 import { Metadata } from "next";
+import { SessionProvider } from "next-auth/react";
 import { Inter } from "next/font/google";
 const inter = Inter({ subsets: ["latin"] });
 
@@ -45,7 +46,8 @@ export default function RootLayout({
 }) {
   return (
     <>
-    <SiteHeader />
+    <SessionProvider>
+    <AppHeader />
 
     <div className="mt-8">
       {/* <div className="relative isolate overflow-hidden bg-white">
@@ -65,6 +67,8 @@ export default function RootLayout({
       {children}
       {/* </div> */}
     </div>
+    </SessionProvider>
+
   </>
   );
 }

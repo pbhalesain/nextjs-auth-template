@@ -1,8 +1,14 @@
+import { db } from "@/db";
+import { PrismaAdapter } from "@auth/prisma-adapter";
 import NextAuth from "next-auth";
 import GitHub from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
+import { CustomUser } from "./types";
 
 export const {handlers : {GET, POST}, auth, signIn, signOut} = NextAuth({
+	pages: {
+		error: "/login",
+	},
 	providers: [
 		GitHub({
 			clientId: process.env.GITHUB_ID,
@@ -11,9 +17,33 @@ export const {handlers : {GET, POST}, auth, signIn, signOut} = NextAuth({
 		GoogleProvider({
 			clientId: process.env.GOOGLE_ID,
 			clientSecret: process.env.GOOGLE_SECRET,
+			allowDangerousEmailAccountLinking: true,
 		}),
 		// ...add more providers here
 	],
+	adapter: PrismaAdapter(db),
+	callbacks: {
+		jwt: async ({ token, user }) => {
+		  if (!token.email) {
+		    return {};
+		  }
+		  if (user) {
+		    token.user = user;
+		  }
+		  return token;
+		},
+		session: async ({ session, token }) => {
+		  (session.user as CustomUser) = {
+		    id: token.sub,
+		    // @ts-ignore
+		    ...(token || session).user,
+		  };
+		  console.log("after callback");
+		  console.log(token);
+		  console.log(session);
+		  return session;
+		},
+	      },
 	// A database is optional, but required to persist accounts in a database
 	// database: process.env.DATABASE_URL,
 });
